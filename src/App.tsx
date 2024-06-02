@@ -1,9 +1,12 @@
-import { JSX } from 'react';
-import { DataTable } from './containers';
+import { JSX } from "react";
+import { DataTable } from "./containers";
+import { DataProvider } from "./context";
 
-const App = () : JSX.Element => {
+const App = (): JSX.Element => {
   return (
-    <DataTable />
+    <DataProvider>
+      <DataTable />
+    </DataProvider>
   );
 };
 

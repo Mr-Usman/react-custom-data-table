@@ -1,18 +1,5 @@
-import { useMemo } from "react";
-import { JSX, useState } from "react";
-import { Table, Th, Td } from "./styled";
-
-type Column = {
-  label: string;
-  accessor: string;
-  sortable: boolean;
-};
-
-type TableData = {
-  name: string;
-  job: string;
-  employed: string;
-};
+import { Table } from "../../components";
+import { Column, TableData } from "../../types";
 
 const columns: Array<Column> = [
   { label: "Name", accessor: "name", sortable: true },
@@ -28,67 +15,6 @@ const data: Array<TableData> = [
   { name: "Richard Gran", job: "Manager", employed: "04/10/21" },
 ];
 
-export const DataTable = (): JSX.Element => {
-  const [sortConfig, setSortConfig] = useState<{
-    key: string;
-    direction: string;
-  } | null>(null);
-
-  const sortedData = useMemo(() => {
-    let sortableItems = [...data];
-    if (sortConfig !== null) {
-      sortableItems.sort((a, b) => {
-        const key = sortConfig?.key as keyof TableData;
-        if (a[key] < b[key]) {
-          return sortConfig.direction === "ascending" ? -1 : 1;
-        }
-        if (a[key] > b[key]) {
-          return sortConfig.direction === "ascending" ? 1 : -1;
-        }
-        return 0;
-      });
-    }
-    return sortableItems;
-  }, [sortConfig]);
-
-  const onFieldSort = (key: string) => {
-    let direction = "ascending";
-    if (
-      sortConfig &&
-      sortConfig?.key === key &&
-      sortConfig.direction === "ascending"
-    ) {
-      direction = "descending";
-    }
-    setSortConfig({ key, direction });
-  };
-
-  return (
-    <Table>
-      <thead>
-        <tr>
-          {columns?.map((column) => (
-            <Th
-              key={column?.accessor}
-              onClick={() =>
-                column?.sortable ? onFieldSort(column.accessor) : null
-              }
-              sortable={column?.sortable}
-            >
-              {column?.label}
-            </Th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {sortedData.map((row, index) => (
-          <tr key={index}>
-            <Td>{row.name}</Td>
-            <Td>{row.job}</Td>
-            <Td>{row.employed}</Td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
+export const DataTable = () => {
+  return <Table data={data} columns={columns} />;
 };
