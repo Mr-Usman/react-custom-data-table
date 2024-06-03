@@ -15,6 +15,8 @@ export interface DataContextType {
   onColumnFieldSort: (key: string) => void;
   sortConfig: SortConfig | null;
   setSortConfig: Dispatch<SetStateAction<SortConfig | null>>;
+  filterText: string;
+  setFilterText: Dispatch<SetStateAction<string>>;
 }
 
 export const DataContext = createContext<DataContextType | undefined>(
@@ -24,11 +26,10 @@ export const DataContext = createContext<DataContextType | undefined>(
 export const DataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [data, setData] = useState<Array<TableData>>([
-    { name: "John Michael", job: "Manager", employed: "23/04/18" },
-  ]);
+  const [data, setData] = useState<Array<TableData>>([]);
 
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
+  const [filterText, setFilterText] = useState<string>("");
 
   const onColumnFieldSort = (key: string) => {
     let direction = "ascending";
@@ -44,7 +45,15 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
 
   return (
     <DataContext.Provider
-      value={{ data, setData, onColumnFieldSort, sortConfig, setSortConfig }}
+      value={{
+        data,
+        setData,
+        onColumnFieldSort,
+        sortConfig,
+        setSortConfig,
+        filterText,
+        setFilterText,
+      }}
     >
       {children}
     </DataContext.Provider>

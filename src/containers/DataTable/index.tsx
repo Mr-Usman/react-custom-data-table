@@ -1,4 +1,4 @@
-import { Table } from "../../components";
+import { Table, Input as FilterByName, Pagination } from "../../components";
 import { Column, TableData } from "../../types";
 
 const columns: Array<Column> = [
@@ -16,5 +16,11 @@ const data: Array<TableData> = [
 ];
 
 export const DataTable = () => {
-  return <Table data={data} columns={columns} />;
+  return (
+    <>
+      <FilterByName />
+      <Table data={data} columns={columns} />
+      <Pagination />
+    </>
+  );
 };

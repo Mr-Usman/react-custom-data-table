@@ -7,10 +7,19 @@ export const Table: FC<{ columns: Column[]; data: TableData[] }> = ({
   columns,
   data,
 }) => {
-  const { onColumnFieldSort, sortConfig } = useDataTable();
+  const { onColumnFieldSort, sortConfig, filterText } = useDataTable();
+
+  const filteredRows = useMemo(() => {
+    if (!filterText) return data;
+    return data.filter((row) => {
+      return Object.values(row).some((cell) =>
+        String(cell).toLowerCase().includes(filterText.toLowerCase())
+      );
+    });
+  }, [data, filterText]);
 
   const sortedData = useMemo(() => {
-    let sortableItems = [...data];
+    let sortableItems = [...filteredRows];
     if (sortConfig !== null) {
       sortableItems.sort((a, b) => {
         const key = sortConfig?.key as keyof TableData;
@@ -24,7 +33,7 @@ export const Table: FC<{ columns: Column[]; data: TableData[] }> = ({
       });
     }
     return sortableItems;
-  }, [data, sortConfig]);
+  }, [filteredRows, sortConfig]);
 
   return (
     <Tab>
