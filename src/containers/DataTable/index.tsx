@@ -1,5 +1,7 @@
+import { useMemo, useState } from "react";
 import { Table, Input as FilterByName, Pagination } from "../../components";
-import { Column, TableData } from "../../types";
+import { useDataTable } from "../../hooks/useDataTable";
+import { Column } from "../../types";
 
 const columns: Array<Column> = [
   { label: "Name", accessor: "name", sortable: true },
@@ -7,20 +9,34 @@ const columns: Array<Column> = [
   { label: "Employed", accessor: "employed", sortable: true },
 ];
 
-const data: Array<TableData> = [
-  { name: "John Michael", job: "Manager", employed: "23/04/18" },
-  { name: "Alexa Liras", job: "Developer", employed: "23/04/18" },
-  { name: "Laurent Perrier", job: "Executive", employed: "19/09/17" },
-  { name: "Michael Levi", job: "Developer", employed: "24/12/08" },
-  { name: "Richard Gran", job: "Manager", employed: "04/10/21" },
-];
+const noOfRowsPerPage = 5;
 
 export const DataTable = () => {
+  const { data } = useDataTable();
+  const [activePage, setActivePage] = useState(1);
+
+  const start = useMemo(() => (activePage - 1) * noOfRowsPerPage, [activePage]);
+  const end = useMemo(() => start + noOfRowsPerPage, [start]);
+
+  const activeDataRows = useMemo(
+    () => data.slice(start, end),
+    [data, end, start]
+  );
+
+  const totalPages = Math.ceil(data.length / noOfRowsPerPage);
+  const onPageChange = (page: number) => {
+    setActivePage(page);
+  };
+
   return (
     <>
       <FilterByName />
-      <Table data={data} columns={columns} />
-      <Pagination />
+      <Table data={activeDataRows} columns={columns} />
+      <Pagination
+        onPageChange={onPageChange}
+        rowsPerPage={noOfRowsPerPage}
+        totalPages={totalPages}
+      />
     </>
   );
 };

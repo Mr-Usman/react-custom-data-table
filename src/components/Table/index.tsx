@@ -3,7 +3,7 @@ import { Table as Tab, Th, Td } from "./styled";
 import { Column, TableData } from "../../types";
 import { useDataTable } from "../../hooks/useDataTable";
 
-export const Table: FC<{ columns: Column[]; data: TableData[] }> = ({
+export const Table: FC<{ columns: Array<Column>; data: Array<TableData> }> = ({
   columns,
   data,
 }) => {
