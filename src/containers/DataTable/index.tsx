@@ -10,6 +10,7 @@ const columns: Array<Column> = [
 ];
 
 const noOfRowsPerPage = 5;
+const pagesToShow = 5;
 
 export const DataTable = () => {
   const { data } = useDataTable();
@@ -23,7 +24,11 @@ export const DataTable = () => {
     [data, end, start]
   );
 
-  const totalPages = Math.ceil(data.length / noOfRowsPerPage);
+  const totalPages = useMemo(
+    () => Math.ceil(data.length / noOfRowsPerPage),
+    [data]
+  );
+
   const onPageChange = (page: number) => {
     setActivePage(page);
   };
@@ -33,9 +38,10 @@ export const DataTable = () => {
       <FilterByName />
       <Table data={activeDataRows} columns={columns} />
       <Pagination
+        activePage={activePage}
         onPageChange={onPageChange}
-        rowsPerPage={noOfRowsPerPage}
         totalPages={totalPages}
+        pagesToShow={pagesToShow}
       />
     </>
   );
