@@ -12,11 +12,15 @@ type SortConfig = { key: string; direction: string };
 export interface DataContextType {
   data: Array<TableData>;
   setData: Dispatch<SetStateAction<Array<TableData>>>;
+  filteredData: Array<TableData>;
+  setFilteredData: Dispatch<SetStateAction<Array<TableData>>>;
   onColumnFieldSort: (key: string) => void;
   sortConfig: SortConfig | null;
   setSortConfig: Dispatch<SetStateAction<SortConfig | null>>;
   filterText: string;
   setFilterText: Dispatch<SetStateAction<string>>;
+  numberOfRowsPerPage: number;
+  setNumberOfRowsPerPage: Dispatch<SetStateAction<number>>;
 }
 
 export const DataContext = createContext<DataContextType | undefined>(
@@ -50,9 +54,11 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
     { name: "Kruz", job: "Developer", employed: "24/12/08" },
     { name: "Zwei", job: "Manager", employed: "04/10/21" },
   ]);
+  const [filteredData, setFilteredData] = useState<Array<TableData>>([]);
 
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [filterText, setFilterText] = useState<string>("");
+  const [numberOfRowsPerPage, setNumberOfRowsPerPage] = useState<number>(5);
 
   const onColumnFieldSort = (key: string) => {
     let direction = "ascending";
@@ -76,6 +82,10 @@ export const DataProvider: React.FC<{ children: ReactNode }> = ({
         setSortConfig,
         filterText,
         setFilterText,
+        filteredData,
+        setFilteredData,
+        numberOfRowsPerPage,
+        setNumberOfRowsPerPage,
       }}
     >
       {children}

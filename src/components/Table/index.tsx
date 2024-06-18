@@ -7,14 +7,15 @@ export const Table: FC<{ columns: Array<Column>; data: Array<TableData> }> = ({
   columns,
   data,
 }) => {
+  console.log("Table data:", data);
+
   const { onColumnFieldSort, sortConfig, filterText } = useDataTable();
 
   const filteredRows = useMemo(() => {
     if (!filterText) return data;
-    return data.filter((row) => {
-      return Object.values(row).some((cell) =>
-        String(cell).toLowerCase().includes(filterText.toLowerCase())
-      );
+
+    return data.filter(({ name }) => {
+      return name.toLowerCase().includes(filterText.toLowerCase());
     });
   }, [data, filterText]);
 

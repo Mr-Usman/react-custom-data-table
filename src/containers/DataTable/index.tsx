@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Table, Input as FilterByName, Pagination } from "../../components";
 import { useDataTable } from "../../hooks/useDataTable";
 import { Column } from "../../types";
@@ -9,24 +9,47 @@ const columns: Array<Column> = [
   { label: "Employed", accessor: "employed", sortable: true },
 ];
 
-const noOfRowsPerPage = 5;
 const pagesToShow = 5;
 
 export const DataTable = () => {
-  const { data } = useDataTable();
+  const {
+    data,
+    filterText,
+    filteredData,
+    setFilteredData,
+    numberOfRowsPerPage,
+  } = useDataTable();
   const [activePage, setActivePage] = useState(1);
 
-  const start = useMemo(() => (activePage - 1) * noOfRowsPerPage, [activePage]);
-  const end = useMemo(() => start + noOfRowsPerPage, [start]);
+  useEffect(() => {
+    setFilteredData(
+      data.filter(({ name }) => {
+        return name.toLowerCase().includes(filterText.toLowerCase());
+      })
+    );
+  }, [data, filterText, setFilteredData]);
+
+  useEffect(() => {
+    setActivePage(1);
+  }, [filterText, numberOfRowsPerPage]);
+
+  const start = useMemo(
+    () => (activePage - 1) * numberOfRowsPerPage,
+    [activePage, numberOfRowsPerPage]
+  );
+  const end = useMemo(
+    () => start + numberOfRowsPerPage,
+    [start, numberOfRowsPerPage]
+  );
 
   const activeDataRows = useMemo(
-    () => data.slice(start, end),
-    [data, end, start]
+    () => filteredData.slice(start, end),
+    [filteredData, end, start]
   );
 
   const totalPages = useMemo(
-    () => Math.ceil(data.length / noOfRowsPerPage),
-    [data]
+    () => Math.ceil(filteredData.length / numberOfRowsPerPage),
+    [filteredData, numberOfRowsPerPage]
   );
 
   const onPageChange = (page: number) => {

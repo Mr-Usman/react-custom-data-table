@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react";
 import { PaginationWrapper, PageButton } from "./styled";
+import { useDataTable } from "../../hooks/useDataTable";
 
 type PaginationProps = {
   activePage: number;
@@ -14,15 +15,11 @@ export const Pagination: FC<PaginationProps> = ({
   onPageChange,
   pagesToShow,
 }) => {
-  const startPage = useMemo(() => {
-    const start = Math.floor((activePage - 1) / pagesToShow) * pagesToShow + 1;
-    return start;
-  }, [activePage, pagesToShow]);
+  const { setNumberOfRowsPerPage } = useDataTable();
+  const currentBlock = Math.ceil(activePage / pagesToShow);
 
-  const endPage = useMemo(() => {
-    const end = Math.min(startPage + pagesToShow - 1, totalPages);
-    return end;
-  }, [pagesToShow, startPage, totalPages]);
+  const startPage = (currentBlock - 1) * pagesToShow + 1;
+  const endPage = Math.min(currentBlock * pagesToShow, totalPages);
 
   const pageNumbers = useMemo(() => {
     const pages = [];
@@ -35,11 +32,11 @@ export const Pagination: FC<PaginationProps> = ({
   return (
     // TODO: make into separate component
     <>
-      <select onChange={(e) => console.log("event value:", e.target.value)}>
+      <select onChange={(e) => setNumberOfRowsPerPage(+e.target.value)}>
         <option value="5">5</option>
         <option value="10">10</option>
-        <option value="15">15</option>
         <option value="20">20</option>
+        <option value="50">50</option>
       </select>
 
       <PaginationWrapper>
